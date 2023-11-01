@@ -1,3 +1,3 @@
 # Solving Ordinary Differential Equation
  
-![](Newton quote.jpg)
+![Newton quote](/Newton quote.jpg)
