@@ -1,0 +1,6 @@
+% Manjul Regmi
+
+function SDot = Lyapunov(t,Sv,A,Q)
+    S = [Sv(1) Sv(2); Sv(2) Sv(3)];
+    SDot = A'*S+S*A+Q;
+end
