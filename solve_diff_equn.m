@@ -49,6 +49,18 @@ for i = 1:length(t)
     K(i,:) = inv(R)*B'*S(:,:,i);
 end
 
+figure
+plot(t,Sv(:,1))
+hold on
+plot(t,Sv(:,2))
+hold on
+plot(t,Sv(:,3))
+
+figure
+plot(t,K(:,1))
+hold on
+plot(t,K(:,2))
+
 function SDotv = Lyapunov(t,Sv,A,Q)
     S = [Sv(1) Sv(2); Sv(2) Sv(3)];
     SDot = A'*S+S*A+Q;
