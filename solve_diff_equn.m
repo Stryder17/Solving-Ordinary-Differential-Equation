@@ -17,8 +17,10 @@ clc; clear; close all;
 
 % Solve Lyapunov equation
 A = [0 1; -1 -1];
+B = [1; 0];
 n = length(A);
 Q = [1 0; 0 1];
+R = 1;
 S_T = [1 0; 0 1];
 T = 10;
 
@@ -37,11 +39,14 @@ Sv = flipud(Sv);
 
 % Convert the vectors to matrices
 S = zeros(n,n,length(t));
+K = zeros(length(t),n);             % Do we need to calculate kalman gains for all steps? Is the dimension of K correct?
 for i = 1:length(t)
     S(1,1,i) = Sv(i,1);
     S(1,2,i) = Sv(i,2);
     S(2,1,i) = Sv(i,2);
     S(2,2,i) = Sv(i,3);
+
+    K(i,:) = inv(R)*B'*S(:,:,i);
 end
 
 function SDotv = Lyapunov(t,Sv,A,Q)
