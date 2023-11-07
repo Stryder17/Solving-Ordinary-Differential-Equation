@@ -27,7 +27,6 @@ x0 = [-5; 1];
 % Time discretization
 T = 5;                  % Final time
 t = 0:0.01:T;
-N = length(t);
 
 n = length(A);
 Q = [1 0; 0 1];
@@ -49,9 +48,10 @@ Sv_T = [S_T(1,1); S_T(1,2); S_T(2,2)];
 % Sv = flipud(Sv);
 
 % Convert the vectors to matrices
-S = zeros(n,n,length(t1));
-K = zeros(length(t1),n);             % Do we need to calculate kalman gains for all steps? Is the dimension of K correct?
-for i = 1:length(t1)
+N = length(t1);
+S = zeros(n,n,N);
+K = zeros(N,n);             % Do we need to calculate kalman gains for all steps? Is the dimension of K correct?
+for i = 1:N
     S(1,1,i) = Sv(i,1);
     S(1,2,i) = Sv(i,2);
     S(2,1,i) = Sv(i,2);
@@ -69,35 +69,29 @@ u = zeros(N,1);
 for k = 1:N
     u(k)=inv(R) * B' * expm(A'*(T-t(k))) *inv(G_T) * (x_T - expm(A*T)*x0);
 end
-
 % Obtain state trajectory
 sys = ss(A,B,C,D);
 [x, t] = lsim(sys,u,t,x0);      % Simulate system with optimal control
-
-% Plot results
-figure
-plot(t1,Sv(:,1))
-hold on
-plot(t1,Sv(:,2))
-hold on
-plot(t1,Sv(:,3))
-title('Performance Kernels')
-
-figure
-plot(t1,K(:,1))
-hold on
-plot(t1,K(:,2))
-title('Kalman Gains')
-
-figure()
-plot(t,u)
-xlabel('Time (s)')
-ylabel('Control')
-
 figure
 plot(t,x)
 xlabel('Time (s)')
 ylabel('State trajectory')
+
+% Plot results
+figure
+plot(t,Sv(:,1))
+hold on
+plot(t,Sv(:,2))
+hold on
+plot(t,Sv(:,3))
+title('Performance Kernels')
+
+figure
+plot(t,K(:,1))
+hold on
+plot(t,K(:,2))
+title('Kalman Gains')
+
 
 %--------------------------------------------------------%
 % Functions
