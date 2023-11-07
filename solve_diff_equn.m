@@ -22,7 +22,7 @@ n = length(A);
 Q = [1 0; 0 1];
 R = 1;
 S_T = [1 0; 0 1];
-T = 10;
+T = 50;
 
 % ode45 can only integrate vectors and can't integrate matrices.
 % Convert final state S matrix to vector
@@ -30,6 +30,7 @@ T = 10;
 
 Sv_T = [S_T(1,1); S_T(1,2); S_T(2,2)];
 [t, Sv] = ode45(@(t,S)Lyapunov(t,S,A,Q), [T 0], Sv_T);
+%[t, Sv] = ode45(@(t,S)Ricatti(t,S,A,B,Q,R), [T 0], Sv_T);
 
 % Flipping the time-span in ode45 does integrate the equation backwards but
 % the time and vector will also be in that order T to 0.
@@ -64,5 +65,11 @@ plot(t,K(:,2))
 function SDotv = Lyapunov(t,Sv,A,Q)
     S = [Sv(1) Sv(2); Sv(2) Sv(3)];
     SDot = A'*S+S*A+Q;
+    SDotv = [SDot(1,1); SDot(1,2); SDot(2,2)];
+end
+
+function SDotv = Ricatti(t,Sv,A,B,Q,R)
+    S = [Sv(1) Sv(2); Sv(2) Sv(3)];
+    SDot = A'*S+S*A-S*B*inv(R)*B'*S+Q;
     SDotv = [SDot(1,1); SDot(1,2); SDot(2,2)];
 end
